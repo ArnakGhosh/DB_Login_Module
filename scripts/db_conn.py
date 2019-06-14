@@ -1,10 +1,13 @@
+#The connection module - Manages the connection
+#to the native database based on DB_DETAILS.properties
 import os
 import psycopg2
 from psycopg2 import Error as DBERR
 import loggerModule as LOG
 import customException as CE
 import passwordEncoder as PE
-LOG.setup_logging_to_file()
+#Reads the DB_DETAILS.properties file and returns a connection
+#object to cursor module
 def connModule():
 	dbpp,dbp,fl='Start',list(),0
 	try:
@@ -39,6 +42,8 @@ def connModule():
 		else:
 			LOG.log_debug("Connection to {DB} DB is successful with {user} on {host}:{port}".format(DB=dbname,user=dbuser,host=dbhost,port=dbport))
 			return conn
+#Opens a cursor to the database, given a connection
+#object and returns a cursor object, ready for CRUD
 def cursModule(s):
 	try:
 		con=s
@@ -49,6 +54,7 @@ def cursModule(s):
 	else:
 		LOG.log_debug("Cursor opened")
 		return cursr
+#Accepts the connection and cursor object and closes them
 def closeCon(con, cur):
 	try:
 		con.close()
@@ -59,6 +65,7 @@ def closeCon(con, cur):
 	else:
 		LOG.log_debug("Closed Connection to DB")
 if __name__=='__main__':
+	LOG.setup_logging_to_file()
 	try:
 		conn=connModule()
 		crsr=cursModule(conn)
